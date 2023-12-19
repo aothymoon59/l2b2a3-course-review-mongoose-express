@@ -1,16 +1,16 @@
 import express from 'express';
 import { CategoryControllers } from './category.controller';
+import validateRequest from '../../middlewares/validateRequest';
+import { categoryValidations } from './category.validation';
 
 const router = express.Router();
 
 router.post(
   '/',
-  //   validateRequest(
-  //     academicDepartmentValidations.createAcademicDepartmentValidationSchema,
-  //   ),
+  validateRequest(categoryValidations.categoryValidationSchema),
   CategoryControllers.createCategory,
 );
 
-// router.get('/', AcademicDepartmentControllers.getAllAcademicDepartments);
+router.get('/', CategoryControllers.getAllCategories);
 
 export const CategoryRoutes = router;
