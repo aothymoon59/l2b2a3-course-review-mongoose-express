@@ -12,6 +12,6 @@ router.post(
   CourseControllers.createCourse,
 );
 
-// router.get('/categories', CategoryControllers.getAllCategories);
+router.get('/courses', CourseControllers.getCourses);
 
 export const CourseRoutes = router;
