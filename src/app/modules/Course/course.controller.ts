@@ -1,5 +1,3 @@
-import httpStatus from 'http-status';
-import AppError from '../../errors/AppError';
 import { TQuery } from '../../interface/query.interface';
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
