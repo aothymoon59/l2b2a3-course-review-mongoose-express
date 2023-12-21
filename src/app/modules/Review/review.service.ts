@@ -6,6 +6,6 @@ const createReviewIntoDb = async (payload: TReview) => {
   return result;
 };
 
-export const reviewServices = {
+export const ReviewServices = {
   createReviewIntoDb,
 };

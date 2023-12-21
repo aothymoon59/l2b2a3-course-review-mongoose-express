@@ -1,3 +1,4 @@
+import httpStatus from 'http-status';
 import { TQuery } from '../../interface/query.interface';
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
@@ -9,7 +10,7 @@ const createCourse = catchAsync(async (req, res) => {
   // send response
   sendResponse(res, {
     success: true,
-    statusCode: 201,
+    statusCode: httpStatus.CREATED,
     message: 'Course created successfully',
     data: result,
   });
@@ -21,7 +22,7 @@ const getCourses = catchAsync(async (req, res) => {
   // send response
   sendResponse(res, {
     success: true,
-    statusCode: 201,
+    statusCode: httpStatus.OK,
     message: 'Courses retrieved successfully',
     meta: result?.meta,
     data: result.courses,
