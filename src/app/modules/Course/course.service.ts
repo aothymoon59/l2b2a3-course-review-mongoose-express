@@ -158,9 +158,9 @@ const getBestCourseFromDb = async () => {
   const course = bestCourses[0];
 
   const bestCourse = {
+    course: { ...course },
     averageRating: parseFloat(course?.averageRating?.toFixed(1)),
     reviewCount: course?.reviewCount,
-    course: { ...course },
   };
 
   delete bestCourse.course.reviews;
