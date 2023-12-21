@@ -6,7 +6,10 @@ import AppError from '../../errors/AppError';
 import { weeksBetweenDates } from './course.utils';
 import { TQuery } from '../../interface/query.interface';
 import makeQuery from '../../utils/makeQuery';
+import { Review } from '../Review/review.model';
+import { ObjectId } from 'mongodb';
 
+// create course
 const createCourseIntoDB = async (payload: TCourse) => {
   const course = await Course.findOne({ title: payload.title });
   if (course) {
@@ -25,6 +28,7 @@ const createCourseIntoDB = async (payload: TCourse) => {
   return result;
 };
 
+// get all courses
 const getCoursesFromDb = async (query: TQuery) => {
   const { filter, sort, skip, limit, meta } = await makeQuery<any>(
     query,
@@ -45,6 +49,7 @@ const getCoursesFromDb = async (query: TQuery) => {
   return { courses, meta };
 };
 
+// update course
 const updateCourseIntoDb = async (courseId: string, payload: TCourse) => {
   const {
     details,
@@ -111,8 +116,17 @@ const updateCourseIntoDb = async (courseId: string, payload: TCourse) => {
   return result;
 };
 
+// Get Course by ID with Reviews
+const getCourseAndReviewsFromDb = async (courseId: string) => {
+  const course = await Course.findById(courseId);
+  const reviews = await Review.find({ courseId: new ObjectId(courseId) });
+
+  return { course, reviews };
+};
+
 export const CourseServices = {
   createCourseIntoDB,
   getCoursesFromDb,
   updateCourseIntoDb,
+  getCourseAndReviewsFromDb,
 };
