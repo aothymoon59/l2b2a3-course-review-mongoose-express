@@ -124,9 +124,60 @@ const getCourseAndReviewsFromDb = async (courseId: string) => {
   return { course, reviews };
 };
 
+const getBestCourseFromDb = async () => {
+  const bestCourses = await Course.aggregate([
+    {
+      $lookup: {
+        from: 'reviews',
+        localField: '_id',
+        foreignField: 'courseId',
+        as: 'reviews',
+      },
+    },
+    {
+      $match: {
+        'reviews.rating': { $gt: 0 },
+      },
+    },
+    {
+      $addFields: {
+        averageRating: { $avg: '$reviews.rating' },
+        reviewCount: { $size: '$reviews' },
+      },
+    },
+    {
+      $sort: {
+        averageRating: -1,
+      },
+    },
+    {
+      $limit: 1,
+    },
+  ]).exec();
+
+  const course = bestCourses[0];
+
+  const bestCourse = {
+    averageRating: parseFloat(course?.averageRating?.toFixed(1)),
+    reviewCount: course?.reviewCount,
+    course: { ...course },
+  };
+
+  delete bestCourse.course.reviews;
+  delete bestCourse.course.averageRating;
+  delete bestCourse.course.reviewCount;
+
+  bestCourse.course.tags = bestCourse.course.tags.filter(
+    (tag: any) => !tag.isDeleted,
+  );
+
+  return bestCourse;
+};
+
 export const CourseServices = {
   createCourseIntoDB,
   getCoursesFromDb,
   updateCourseIntoDb,
   getCourseAndReviewsFromDb,
+  getBestCourseFromDb,
 };

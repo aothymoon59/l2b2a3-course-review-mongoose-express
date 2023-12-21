@@ -20,6 +20,8 @@ router.put(
 
 router.get('/courses/:courseId/reviews', CourseControllers.getCourseAndReviews);
 
+router.get('/course/best', CourseControllers.getBestCourse);
+
 router.get('/courses', CourseControllers.getCourses);
 
 export const CourseRoutes = router;
