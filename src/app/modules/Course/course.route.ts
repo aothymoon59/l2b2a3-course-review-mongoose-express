@@ -12,6 +12,12 @@ router.post(
   CourseControllers.createCourse,
 );
 
+router.put(
+  '/courses/:courseId',
+  validateRequest(CourseValidations.updateCourseValidationSchema),
+  CourseControllers.updateCourse,
+);
+
 router.get('/courses', CourseControllers.getCourses);
 
 export const CourseRoutes = router;

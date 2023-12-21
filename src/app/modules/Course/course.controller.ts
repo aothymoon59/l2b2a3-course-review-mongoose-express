@@ -29,7 +29,21 @@ const getCourses = catchAsync(async (req, res) => {
   });
 });
 
+const updateCourse = catchAsync(async (req, res) => {
+  const { courseId } = req.params;
+  const result = await CourseServices.updateCourseIntoDb(courseId, req.body);
+
+  // send response
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'Course updated successfully',
+    data: result,
+  });
+});
+
 export const CourseControllers = {
   createCourse,
   getCourses,
+  updateCourse,
 };

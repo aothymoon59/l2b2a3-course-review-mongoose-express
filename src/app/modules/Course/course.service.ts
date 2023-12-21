@@ -37,10 +37,82 @@ const getCoursesFromDb = async (query: TQuery) => {
     .skip(skip)
     .limit(limit);
 
+  // remove deleted tags => isDeleted:true
+  courses.forEach((course) => {
+    course.tags = course.tags.filter((tag) => !tag.isDeleted);
+  });
+
   return { courses, meta };
+};
+
+const updateCourseIntoDb = async (courseId: string, payload: TCourse) => {
+  const {
+    details,
+    startDate,
+    endDate,
+    durationInWeeks,
+    tags,
+    ...remainingCourseData
+  } = payload;
+  const course = await Course.findById(courseId);
+  if (!course) {
+    return new AppError(httpStatus.BAD_REQUEST, 'Course not found');
+  }
+  const modifiedUpdatedData: Record<string, unknown> = {
+    ...remainingCourseData,
+  };
+
+  if (durationInWeeks) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      'duration week cannot update directly need to update startDate and endDate',
+    );
+  }
+  if (startDate && endDate) {
+    modifiedUpdatedData.durationInWeeks = weeksBetweenDates(
+      payload.startDate,
+      payload.endDate,
+    );
+  } else if (startDate) {
+    modifiedUpdatedData.durationInWeeks = weeksBetweenDates(
+      payload.startDate,
+      course.endDate,
+    );
+  } else if (endDate) {
+    modifiedUpdatedData.durationInWeeks = weeksBetweenDates(
+      course.startDate,
+      payload.endDate,
+    );
+  }
+  if (details && Object.keys(details).length) {
+    for (const [key, value] of Object.entries(details)) {
+      modifiedUpdatedData[`details.${key}`] = value;
+    }
+  }
+
+  type TTag = { name: string; isDeleted: boolean };
+  const previousTag: TTag[] = course?.tags ? [...course.tags] : [];
+  if (tags && tags.length) {
+    tags.forEach((tag: TTag) => {
+      const index = previousTag.findIndex((item) => item.name === tag.name);
+      if (index !== -1) {
+        previousTag[index] = tag;
+      } else {
+        previousTag.push(tag);
+      }
+    });
+  }
+
+  modifiedUpdatedData.tags = previousTag;
+
+  const result = await Course.findByIdAndUpdate(courseId, modifiedUpdatedData, {
+    new: true,
+  });
+  return result;
 };
 
 export const CourseServices = {
   createCourseIntoDB,
   getCoursesFromDb,
+  updateCourseIntoDb,
 };
