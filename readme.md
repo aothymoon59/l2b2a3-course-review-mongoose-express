@@ -1,5 +1,49 @@
 ## Course Review Project
 
+- Live Link: https://l2b2a3-course-review.vercel.app
+
+### Create a Course
+
+- Method: POST
+- Endpoint: /api/course
+
+### Get all Course
+
+- Method: GET
+- Endpoint: /api/courses
+
+### Create a Category
+
+- Method: POST
+- Endpoint: /api/categories
+
+### Get All Categories
+
+- Method: GET
+- Endpoint: /api/categories
+
+### Create a Review
+
+- Method: POST
+- Endpoint: /api/reviews
+
+### Update a Course (Partial Update with Dynamic Update)
+
+- Method: PUT
+- Endpoint: /api/courses/:courseId
+
+### Get Course by ID with Reviews
+
+- Method: GET
+- Endpoint: /api/courses/:courseId/reviews
+
+### Get the Best Course Based on Average Review (Rating)
+
+- Method: GET
+- Endpoint: /api/course/best
+
+## Run the server locally
+
 ### Step 1
 
 - Create a .env file in the root directory of this project. And use this code on .env file
